@@ -1,0 +1,56 @@
+//created on: Apr 14, 2013
+//Jesse Osiecki
+package com.jesse.rules
+import com.jesse.main.Computer
+import com.jesse.main.Computer.GraphicsCardType
+import com.jesse.main.Computer.Attribute
+rule "loud"
+
+    when 
+    	$c : Computer( (speed > 3 && (card == GraphicsCardType.getCard(1) || card == GraphicsCardType.getCard(2)))
+    		|| memory > 16)
+    then
+    	$c.addAttribute(Attribute.LOUD);
+    	$c.armChecked();
+end
+
+rule "cheap"
+    when 
+    	$c : Computer(price < 1000)
+    then
+    	$c.addAttribute(Attribute.CHEAP);
+    	$c.armChecked();
+end
+
+rule "expensive"
+    when 
+    	$c : Computer(price > 4000)
+    then
+    	$c.addAttribute(Attribute.EXPENSIVE);
+    	$c.armChecked();
+end
+
+rule "hot"
+    when 
+    	$c : Computer(memory > 8 || speed > 4)
+    then
+    	$c.addAttribute(Attribute.HOT);
+    	$c.armChecked();
+end
+
+
+rule "can_game"
+    when 
+    	$c : Computer(card == GraphicsCardType.getCard(2) || (card == GraphicsCardType.getCard(1) && speed > 2))
+    then
+    	$c.addAttribute(Attribute.CAN_GAME);
+    	$c.armChecked();
+end
+
+rule "crunch_numbers"
+    when 
+    	$c : Computer(card == GraphicsCardType.getCard(2) || (speed > 4 && memory > 4))
+    then
+    	$c.addAttribute(Attribute.CRUNCH_NUMBERS);
+    	$c.armChecked();
+end

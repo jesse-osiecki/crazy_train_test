@@ -1,0 +1,14 @@
+//created on: Apr 14, 2013
+//Jesse Osiecki
+package com.jesse.rules
+import com.jesse.main.Computer
+import com.jesse.main.Computer.GraphicsCardType
+import com.jesse.main.Computer.Attribute
+
+rule "risky"
+    when 
+    	$c : Computer(getAttributes().contains(Attribute.CHEAP) && getAttributes().contains(Attribute.HOT))
+    then
+    	$c.addAttribute(Attribute.RISKY);
+    	$c.armChecked();
+end
