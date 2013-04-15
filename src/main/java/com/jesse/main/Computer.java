@@ -92,18 +92,18 @@ public class Computer {
 		}
 	}
 	
-	protected String model;
+	private String model;
 	//memory is in Gigabytes
-	protected double memory;
+	private double memory;
 	//speed is in Ghz
-	protected double speed;
-	protected GraphicsCardType card;
+	private double speed;
+	private GraphicsCardType card;
 	//price is in USD
-	protected double price;
+	private double price;
 	//What kind of computer is is?
-	protected ArrayList<Attribute> attributes;
+	private ArrayList<Attribute> attributes;
 	//has it been checked
-	protected boolean checked;
+	private boolean checked;
 	
 	public Computer(String model, int memory, double speed, GraphicsCardType card, double price){
 		this.model = model; this.memory = memory; this.speed = speed; this.card = card; this.price = price;
