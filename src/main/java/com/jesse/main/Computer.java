@@ -78,6 +78,18 @@ public class Computer {
 
 		    return gCard;
 		}
+		public String toString(){
+			String v = "";
+			switch(value){
+				case 0: v = "None";
+						break;
+				case 1: v = "Average";
+						break;	
+				case 2: v = "Premium";
+						break;
+			}
+			return v;
+		}
 	}
 	
 	protected String model;

@@ -18,7 +18,11 @@ import com.jesse.main.IncorrectDRLException;
 public class ComputerComparison {
 
 	private StatefulKnowledgeSession ksession;
-	public ComputerComparison(String drl, ArrayList<Computer> computers){
+	
+	public static ComputerComparison makeComparisonObj(String drl, ArrayList<Computer> computers){
+		return new ComputerComparison(drl, computers);
+	}
+	private ComputerComparison(String drl, ArrayList<Computer> computers){
 		//new knowlegebuilder using the drl
 		//Can add more later here if needed
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

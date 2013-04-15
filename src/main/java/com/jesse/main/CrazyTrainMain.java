@@ -3,6 +3,7 @@
 
 package com.jesse.main;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -21,19 +22,30 @@ public class CrazyTrainMain {
 		computerList.add(new Computer("BUTTUGLYMARTIAN", 16, 4, GraphicsCardType.PREMIUM, 3000));
 		computerList.add(new Computer("ROCKO", 32, 5, GraphicsCardType.NONE, 8000));
 		
+		//print specs for reference
+		DecimalFormat price = new DecimalFormat("$0.00");
+		DecimalFormat speed = new DecimalFormat("0.0 GHz");
+		DecimalFormat memory = new DecimalFormat("0.0 GB");
+		for(Computer c: computerList){
+			System.out.println("Model: " + c.getModel() + " | Memory: " + memory.format(c.getMemory())
+					+ " | Speed: " + speed.format(c.getSpeed()) + " | GraphicsCard: " + 
+					c.getCard() + " | Price: " + price.format(c.getPrice()));
+			System.out.println();
+		}
+		
 		//Comparison obj
-		ComputerComparison comparR = new ComputerComparison("ComputerRule.drl", computerList);
+		ComputerComparison comparR = ComputerComparison.makeComparisonObj("ComputerRule.drl", computerList);
 		
 		//knowlegesession
 		StatefulKnowledgeSession ksession = comparR.getSession();
 		//log
 		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log");
-		//fire the all rules, give no sympathy
+		//fire all the rules, give no sympathy
 		ksession.fireAllRules();
 		ksession.dispose();
 		//new comparison just for post-comparison dependent comparisons
-		//TODO is there a better way? Two files together fires them all at once still
-		comparR = new ComputerComparison("SecondaryComputerRules.drl", computerList);
+		//TODO is there a better way?
+		comparR = ComputerComparison.makeComparisonObj("SecondaryComputerRules.drl", computerList);
 		ksession = comparR.getSession();
 		ksession.fireAllRules();
 		
