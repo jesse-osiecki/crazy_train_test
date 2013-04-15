@@ -11,17 +11,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import com.jesse.main.Computer.GraphicsCardType;
 
 public class CrazyTrainMain {
-
-	public static void main(String[] args) {
-		
-		//make list of Computers
-		ArrayList<Computer> computerList = new ArrayList<Computer>();
-		computerList.add(new Computer("NIGELTHORNBERRY", 2, 5, GraphicsCardType.NONE, 800));
-		computerList.add(new Computer("ARNOLD", 8, 3, GraphicsCardType.AVERAGE, 1500));
-		computerList.add(new Computer("INVADERZIM", 1, 1, GraphicsCardType.NONE, 400));
-		computerList.add(new Computer("BUTTUGLYMARTIAN", 16, 4, GraphicsCardType.PREMIUM, 3000));
-		computerList.add(new Computer("ROCKO", 32, 5, GraphicsCardType.NONE, 8000));
-		
+	private static void printSpecs(ArrayList<Computer> computerList){
 		//print specs for reference
 		DecimalFormat price = new DecimalFormat("$0.00");
 		DecimalFormat speed = new DecimalFormat("0.0 GHz");
@@ -32,14 +22,14 @@ public class CrazyTrainMain {
 					c.getCard() + " | Price: " + price.format(c.getPrice()));
 			System.out.println();
 		}
-		
+	}
+	private static ComputerComparison drlComparison(ArrayList<Computer> computerList, int log){
 		//Comparison obj
 		ComputerComparison comparR = ComputerComparison.makeComparisonObj("ComputerRule.drl", computerList);
-		
 		//knowlegesession
 		StatefulKnowledgeSession ksession = comparR.getSession();
 		//log
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log");
+		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log"+log);
 		//fire all the rules, give no sympathy
 		ksession.fireAllRules();
 		ksession.dispose();
@@ -48,28 +38,54 @@ public class CrazyTrainMain {
 		comparR = ComputerComparison.makeComparisonObj("SecondaryComputerRules.drl", computerList);
 		ksession = comparR.getSession();
 		ksession.fireAllRules();
-		
-		for (Computer c: computerList) {
-			if(c.getChecked()){
-				//print out what we know about the model
-				System.out.print(c.getModel() + ": ");
-				for(int i = 0; i < c.getAttributes().size(); i++){
-					//special cases
-					
-					if(i == c.getAttributes().size() - 2){
-						System.out.print(c.getAttributes().get(i) + ", and ");
-					}
-					else if(i != c.getAttributes().size() - 1){
-						System.out.print(c.getAttributes().get(i) + ", ");
-					}
-					else{
-						System.out.println(c.getAttributes().get(i));
-					}
-				}
-			}
-		}
 		logger.close();
-
+		return comparR;
+	}
+	public static void main(String[] args) {
+		
+		//make list of Computers
+		ArrayList<Computer> computerList = new ArrayList<Computer>();
+		computerList.add(new Computer("NIGELTHORNBERRY", 2, 5, GraphicsCardType.NONE, 800));
+		computerList.add(new Computer("ARNOLD", 8, 3, GraphicsCardType.AVERAGE, 1500));
+		computerList.add(new Computer("INVADERZIM", 1, 1, GraphicsCardType.NONE, 400));
+		computerList.add(new Computer("BUTTUGLYMARTIAN", 16, 4, GraphicsCardType.PREMIUM, 3000));
+		computerList.add(new Computer("ROCKO", 32, 5, GraphicsCardType.NONE, 8000));
+		
+		//print specs
+		printSpecs(computerList);
+		
+		//compare 1-5
+		ComputerComparison comparR = drlComparison(computerList, 0);
+		
+		//conclusions on first five
+		System.out.println();
+		comparR.computerConclusions();
+		System.out.println();
+		comparR.riskyNumberCruncher();
+		comparR.safeGamingComputer();
+		comparR.hotGamingComputerAll();
+		System.out.println();
+		
+		
+		System.out.println("Now for how this program feels about George Clinton" + "\n");
+		
+		
+		//Machine6 also known as GEORGECLINTON
+		computerList.clear();
+		computerList.add(new Computer("GEORGECLINTON", 2, 2, GraphicsCardType.PREMIUM, 5500));
+		//George everybody
+		printSpecs(computerList);
+		//compare 6
+		comparR = drlComparison(computerList, 1);
+		//conclusions on GeorgeClinton
+		System.out.println("With George Clinton being the only one considered:");
+		System.out.println();
+		comparR.computerConclusions();
+		System.out.println();
+		comparR.riskyNumberCruncher();
+		comparR.safeGamingComputer();
+		comparR.hotGamingComputerAll();
+		System.out.println();
 	}
 
 }

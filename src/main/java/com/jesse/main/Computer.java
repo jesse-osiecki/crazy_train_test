@@ -140,5 +140,8 @@ public class Computer {
 	public void armChecked(){
 		checked = true;
 	}
+	public String toString(){
+		return model;
+	}
 
 }
