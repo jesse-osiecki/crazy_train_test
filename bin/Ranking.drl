@@ -1,0 +1,64 @@
+//created on: Apr 18, 2013
+//Jesse Osiecki
+//NOTE I found a better way to compare stuff, but I left the previous drl files in tack 
+//because it only felt fair
+package com.jesse.rules
+
+//list any import classes here.
+import com.jesse.main.Computer
+import com.jesse.main.Computer.GraphicsCardType
+import com.jesse.main.Computer.Attribute
+
+rule "Gaming computers are better buys than number crunchers"
+
+    when
+    	//it is bad to be a number cruncher here, make sure isnt gaming computer too
+    	//three cases, gaming computers, number crunchers, neither
+    	//third case handled by the neither cruncher nor gamer rule
+    	
+        c$ : Computer(attributes contains Attribute.CRUNCH_NUMBERS && attributes not contains Attribute.CAN_GAME, point$ : assignPointValue(1))
+    then
+    	c$.addRankingPoints(point$);
+
+end
+
+
+//
+//EXPENSIVE vs. no price val vs. CHEAP
+//
+//three cases, expensive, cheap, neither
+rule "Expensive computers are worse buys than cheap computers"
+    when
+       c$ : Computer(attributes contains Attribute.EXPENSIVE, point$ : assignPointValue(2))
+    then
+       c$.addRankingPoints(point$);
+end
+
+rule "A computer with no value is presumable not as good as a cheap computer"
+	//Evpensive will have negative point val, none will be -1, cheap will be 0
+    when
+       c$ : Computer(attributes not contains Attribute.EXPENSIVE && attributes not contains Attribute.CHEAP, point$ : (-1))
+    then
+       c$.addRankingPoints(point$);
+end
+///
+///
+
+rule "Computers that cant game or crunch are worse than those who can"
+	//two cases, can do (game or crunch) or can't
+	when
+        c$ : Computer(attributes not contains Attribute.CRUNCH_NUMBERS && attributes not contains Attribute.CAN_GAME, point$ : assignPointValue(3))
+	then
+		c$.addRankingPoints(point$);
+end
+
+rule "Risky computers are the worst buys"
+	//two cases risky or not
+    when
+       c$ : Computer(attributes contains Attribute.RISKY, point$ : assignPointValue(4))
+    then
+       c$.addRankingPoints(point$);
+
+end
+
+
