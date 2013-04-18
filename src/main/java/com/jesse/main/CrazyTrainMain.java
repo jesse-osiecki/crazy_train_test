@@ -23,22 +23,23 @@ public class CrazyTrainMain {
 			System.out.println();
 		}
 	}
-	private static ComputerComparison drlComparison(ArrayList<Computer> computerList, int log){
+	private static ComputerComparison drlComparison(ArrayList<Computer> computerList, String[] drlFiles, int log){
 		//Comparison obj
-		ComputerComparison comparR = ComputerComparison.makeComparisonObj("ComputerRule.drl", computerList);
+		ComputerComparison comparR = null;
 		//knowlegesession
-		StatefulKnowledgeSession ksession = comparR.getSession();
+		StatefulKnowledgeSession ksession;
 		//log
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log"+log);
+		KnowledgeRuntimeLogger logger;
+		int logSub = 0;
 		//fire all the rules, give no sympathy
-		ksession.fireAllRules();
-		ksession.dispose();
-		//new comparison just for post-comparison dependent comparisons
-		//TODO is there a better way?
-		comparR = ComputerComparison.makeComparisonObj("SecondaryComputerRules.drl", computerList);
-		ksession = comparR.getSession();
-		ksession.fireAllRules();
-		logger.close();
+		for(String s: drlFiles){
+			comparR = ComputerComparison.makeComparisonObj(s, computerList);
+			ksession = comparR.getSession();
+			logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log"+log + "_" + logSub);
+			ksession.fireAllRules();
+			logger.close();
+			logSub++;
+		}
 		return comparR;
 	}
 	public static void main(String[] args) {
@@ -55,7 +56,7 @@ public class CrazyTrainMain {
 		printSpecs(computerList);
 		
 		//compare 1-5
-		ComputerComparison comparR = drlComparison(computerList, 0);
+		ComputerComparison comparR = drlComparison(computerList, new String[]{"ComputerRule.drl", "SecondaryComputerRules.drl"}, 0);
 		
 		//conclusions on first five
 		System.out.println();
@@ -71,12 +72,13 @@ public class CrazyTrainMain {
 		
 		
 		//Machine6 also known as GEORGECLINTON
-		computerList.clear();
-		computerList.add(new Computer("GEORGECLINTON", 2, 2, GraphicsCardType.PREMIUM, 5500));
+		
+		ArrayList<Computer> justGeorge = new ArrayList<Computer>();
+		justGeorge.add(new Computer("GEORGECLINTON", 2, 2, GraphicsCardType.PREMIUM, 5500));
 		//George everybody
-		printSpecs(computerList);
+		printSpecs(justGeorge);
 		//compare 6
-		comparR = drlComparison(computerList, 1);
+		comparR = drlComparison(justGeorge, new String[]{"ComputerRule.drl", "SecondaryComputerRules.drl"}, 1);
 		//conclusions on GeorgeClinton
 		System.out.println("With George Clinton being the only one considered:");
 		System.out.println();
@@ -86,6 +88,16 @@ public class CrazyTrainMain {
 		comparR.safeGamingComputer();
 		comparR.hotGamingComputerAll();
 		System.out.println();
+		
+		
+		//Bonus section
+		//combine the lists
+		computerList.addAll(justGeorge);
+		//fire ranking rules
+		comparR = drlComparison(computerList, new String[]{"Ranking.drl"}, 2);
+		//show ranking
+		System.out.println("***THE COMPUTER RANKING SYSTEM*** (closer to 0 is better)");
+		comparR.rankComputers();
 	}
 
 }

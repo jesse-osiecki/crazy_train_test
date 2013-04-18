@@ -3,6 +3,7 @@
 package com.jesse.main;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Stack;
 
 import org.drools.KnowledgeBase;
@@ -61,6 +62,13 @@ public class ComputerComparison {
 					hotGamingComputer = false;
 				}
 			}
+		}
+	}
+	public void rankComputers(){
+		//ranking system for the bonus problem
+		Collections.sort(computerList);
+		for(Computer c: computerList){
+			System.out.println(c + " " + c.getRanking());
 		}
 	}
 	private ComputerComparison(String drl, ArrayList<Computer> computers){
@@ -127,4 +135,5 @@ public class ComputerComparison {
 			System.out.println("All gaming computers are NOT hot");
 		}
 	}
+	
 }
