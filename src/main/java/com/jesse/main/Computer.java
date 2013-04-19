@@ -175,14 +175,14 @@ public class Computer implements Comparable<Computer>{
 		 */
 		Stack<Integer> s = new Stack<Integer>();
 		int fn = 0;
-		for(int i = 0; i <= ruleLevel; i ++){
+		for(int i = 0; i < ruleLevel; i ++){
 			@SuppressWarnings("unchecked")
 			Stack<Integer> sTemp = (Stack<Integer>) s.clone();
 			while(!sTemp.empty()){
 				fn += sTemp.pop();
 			}
-			fn ++;
 			s.push(fn);
+			fn ++;
 		}
 		return -1 * fn;
 	}
